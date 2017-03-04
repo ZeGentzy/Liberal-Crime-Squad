@@ -65,17 +65,9 @@ void noticecheck(int exclude,int difficulty)
    }
 }
 
-
-
-/* checks if your liberal behavior/attack alienates anyone */
-char alienationcheck(char mistake)
+/* finds anyone your liberal behavior/attack can alienate */
+vector<int> listAlienable(char mistake)
 {
-   if(location[cursite]->siege.siege)return 0;
-
-   char alienate=0,alienatebig=0;
-
-   int oldsitealienate=sitealienate;
-
    vector<int> noticer;
    for(int e=0;e<ENCMAX;e++)
    {
@@ -90,6 +82,19 @@ char alienationcheck(char mistake)
       if(encounter[e].exists&&encounter[e].alive&&(encounter[e].align==0||(encounter[e].align==1&&mistake)))
          noticer.push_back(e);
    }
+   return noticer;
+}
+
+/* checks if your liberal behavior/attack alienates anyone */
+char alienationcheck(char mistake)
+{
+   if(location[cursite]->siege.siege)return 0;
+
+   char alienate=0,alienatebig=0;
+
+   int oldsitealienate=sitealienate;
+
+   vector<int> noticer = listAlienable(mistake);
 
    if(len(noticer))
    {

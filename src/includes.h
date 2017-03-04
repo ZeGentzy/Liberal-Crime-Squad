@@ -1524,6 +1524,8 @@ char talk(Creature &a,int t);
 */
 /* checks if your liberal activity is noticed */
 void noticecheck(int exclude,int difficulty=DIFFICULTY_EASY);
+/* finds anyone your liberal behavior/attack can alienate */
+vector<int> listAlienable(char mistake);
 /* checks if your liberal behavior/attack alienates anyone */
 char alienationcheck(char mistake);
 /* checks if conservatives see through your disguise */

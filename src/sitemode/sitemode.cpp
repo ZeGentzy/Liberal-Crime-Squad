@@ -709,30 +709,82 @@ void mode_site()
                      (levelmap[locx][locy+1][locz].flag & SITEBLOCK_BLOCK)||
                      (levelmap[locx][locy-1][locz].flag & SITEBLOCK_BLOCK)))
             {
-               int spray=0;
-               for(int i=0;i<6;i++)
+               while (true)
                {
-                  if(!activesquad->squad[i])break;
-                  if(activesquad->squad[i]->get_weapon().can_graffiti())
+                  clearmessagearea(false);
+
+                  int c = 'y';
+                  if(len(listAlienable(1)) && sitealienate == 0 || enemy)
                   {
-                     spray=1;
+                     int typeloc = 16;
+                     c = 0;
+                     set_color(COLOR_WHITE,COLOR_BLACK,1);
+
+                     if(len(listAlienable(0)) && sitealienate == 0)
+                     {
+                        move(typeloc,1);
+                        addstr("Placing graffiti alienates the crowd.", gamelog);
+                        gamelog.newline();
+                        typeloc++;
+                     }
+                     else if(len(listAlienable(1)) && sitealienate == 0)
+                     {
+                        move(typeloc,1);
+                        addstr("Placing graffiti alerts the conservatives.", gamelog);
+                        gamelog.newline();
+                        typeloc++;
+                     }
+
+                     if(enemy)
+                     {
+                        move(typeloc,1);
+                        addstr("Placing graffiti", gamelog);
+                        if (typeloc != 16)
+                        {
+                           addstr(" also", gamelog);
+                        }
+                        addstr(" lets your enemy target you.", gamelog);
+                        gamelog.newline();
+                        typeloc++;
+                     }
+
+                     move(typeloc,1);
+                     addstr("Do it anyways? (Yes or No)");
+
+                     c=getkey();
+                  }
+
+                  if(c=='y')
+                  {
+                     int spray=0;
+                     for(int i=0;i<6;i++)
+                     {
+                        if(!activesquad->squad[i])break;
+                        if(activesquad->squad[i]->get_weapon().can_graffiti())
+                        {
+                           spray=1;
+                           break;
+                        }
+                     }
+                     if(spray)
+                     {
+                        special_graffiti();
+                        if(enemy&&sitealarm)
+                        {
+                           enemyattack();
+                        }
+                     }
                      break;
                   }
-               }
-               if(spray)
-               {
-                  special_graffiti();
-                  if(enemy&&sitealarm)
-                  {
-                     enemyattack();
-                  }
+                  else if(c=='n')
+                     break;
                }
             }
          }
 
          if(c=='t'&&talkers)
          {
-            int forcesp=-1;
+	        int forcesp=-1;
             int forcetk=-1;
 
             for(int p=0;p<6;p++)
